@@ -10,8 +10,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.wymiwyg</groupId>
 	<artifactId>wrhapi-testing</artifactId>
-	<name />
-	<version>0.2.1</version>
+	<name>WRHAPI Testing</name>
+	<version>0.2.2</version>
 	<description />
 	<build>
 		<plugins>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>wrhapi</artifactId>
-			<version>0.2.1</version>
+			<version>0.2.2</version>
 		</dependency>
 	</dependencies>
 </project>
