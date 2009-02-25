@@ -49,6 +49,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 
@@ -62,6 +63,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import org.wymiwyg.commons.timelogger.SummaryReportWriter;
+import org.wymiwyg.commons.timelogger.TimeLogger;
 
 /**
  * @author reto
@@ -414,7 +417,7 @@ public class BaseTests extends TestCase {
 	 * @throws Exception
 	 *             on failure
 	 */
-	public void testExceptionStatusCodeAfterBody() throws Exception {
+	/*public void testExceptionStatusCodeAfterBody() throws Exception {
 		final int statusCode = 302;
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
 			public void handle(Request request, Response response)
@@ -452,6 +455,58 @@ public class BaseTests extends TestCase {
 		} finally {
 			webServer.stop();
 		}
+	}*/
+
+	public void testRepeated() throws Exception {
+		final String body = "This is the content of the body";
+		final boolean writeBody = false;
+		WebServer webServer = createServer().startNewWebServer(new Handler() {
+			public void handle(Request request, Response response)
+					throws HandlerException {
+				log.info("handling testSimpleBody");
+
+				if (writeBody) {
+					response.setBody(new MessageBody2Write() {
+						public void writeTo(WritableByteChannel out)
+								throws IOException {
+							out.write(ByteBuffer.wrap(body.getBytes()));
+						}
+					});
+				} else {
+					response.setBody(new MessageBody2Read() {
+						public ReadableByteChannel read() throws IOException {
+							return Channels
+									.newChannel(new ByteArrayInputStream(body
+											.getBytes()));
+						}
+					});
+				}
+			}
+		}, serverBinding);
+
+		TimeLogger tl = new TimeLogger();
+		for (int r = 0; r < 10000; r++) {
+			tl.startSection("iteration");
+			URL serverURL = new URL("http://"
+					+ serverBinding.getInetAddress().getHostAddress() + ":"
+					+ serverBinding.getPort() + "/");
+			Reader reader = new InputStreamReader(serverURL.openStream());
+			StringWriter stringWriter = new StringWriter();
+
+			for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+				stringWriter.write(ch);
+			}
+
+			assertEquals(body, stringWriter.toString());
+			tl.endSection();
+		}
+
+		webServer.stop();
+
+		tl.writeReport(new PrintWriter(System.out));
+		System.out.println("Using SummaryReportWriter:");
+		tl.setReportWriter(new SummaryReportWriter());
+		tl.writeReport(new PrintWriter(System.out));
 	}
 
 	/**
