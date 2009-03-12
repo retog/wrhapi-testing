@@ -16,6 +16,8 @@
  */
 package org.wymiwyg.wrhapi.test;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -369,6 +371,94 @@ public class BaseTests extends TestCase {
 			webServer.stop();
 		}
 	}
+
+	public void testStatusCodeResetInMessageBody() throws Exception {
+		final int newStatusCode = 302;
+		WebServer webServer = createServer().startNewWebServer(new Handler() {
+			public void handle(Request request, final Response response)
+					throws HandlerException {
+				log.info("handling testStatusCode");
+				response.setResponseStatus(ResponseStatus
+						.CREATED);
+				response.setHeader(HeaderName.SERVER, "Ad-Hoc testing server");
+				response.setBody(new MessageBody2Write() {
+
+					public void writeTo(WritableByteChannel out) throws IOException {
+						try {
+							response.setResponseStatus(ResponseStatus.getInstanceByCode(newStatusCode));
+						} catch (HandlerException ex) {
+							throw new RuntimeException(ex);
+						}
+						ByteBuffer bb = ByteBuffer.wrap("this is the body".getBytes());
+						out.write(bb);
+					}
+				});
+			}
+		}, serverBinding);
+
+		try {
+			URL serverURL = new URL("http://"
+					+ serverBinding.getInetAddress().getHostAddress() + ":"
+					+ serverBinding.getPort() + "/");
+			HttpClient client = new HttpClient();
+			HttpMethod method = new HeadMethod(serverURL.toString());
+			method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+					new DefaultHttpMethodRetryHandler(0, false));
+			client.executeMethod(method);
+			// for the handler to be invoked, something of the response has to
+			// be asked
+			assertEquals(newStatusCode, method.getStatusCode());
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			webServer.stop();
+		}
+	}
+
+
+	public void testHeaderAddedInMessageBody() throws Exception {
+		final String serverHeaderValue = "Ad-Hoc testing server";
+		WebServer webServer = createServer().startNewWebServer(new Handler() {
+			public void handle(Request request, final Response response)
+					throws HandlerException {
+
+				response.setBody(new MessageBody2Write() {
+
+					public void writeTo(WritableByteChannel out) throws IOException {
+						try {
+
+							response.setHeader(HeaderName.SERVER,serverHeaderValue);
+						} catch (HandlerException ex) {
+							throw new RuntimeException(ex);
+						}
+						ByteBuffer bb = ByteBuffer.wrap("this is the body".getBytes());
+						out.write(bb);
+					}
+				});
+			}
+		}, serverBinding);
+
+		try {
+			URL serverURL = new URL("http://"
+					+ serverBinding.getInetAddress().getHostAddress() + ":"
+					+ serverBinding.getPort() + "/");
+			URLConnection connection = serverURL.openConnection();
+			connection.connect();
+			// for the handler to be invoked, something of the response has to
+			// be asked
+			assertEquals(serverHeaderValue, connection.getHeaderField("server"));
+			connection.getContentLength();
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			webServer.stop();
+		}
+	}
+
 
 	/**
 	 * test is the returned status code matches the one of the HandlerException
