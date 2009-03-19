@@ -174,6 +174,7 @@ public class BaseTests extends TestCase {
 						} catch (HandlerException ex) {
 							throw new RuntimeException(ex);						}
 						out.write(ByteBuffer.wrap(body.getBytes()));
+						out.close();
 					}
 				});
 			}
