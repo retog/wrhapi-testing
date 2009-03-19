@@ -55,6 +55,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -149,6 +150,51 @@ public class BaseTests extends TestCase {
 			}
 
 			assertEquals(body, stringWriter.toString());
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			webServer.stop();
+		}
+	}
+
+	public void testEmptyBodyAnHeader() throws Exception {
+		final String body = "";
+		WebServer webServer = createServer().startNewWebServer(new Handler() {
+			public void handle(Request request, final Response response)
+					throws HandlerException {
+				log.info("handling testEmptyBody");
+				response.setResponseStatus(ResponseStatus.CREATED);
+				response.setBody(new MessageBody2Write() {
+					public void writeTo(WritableByteChannel out)
+							throws IOException {
+						try {
+							response.setHeader(HeaderName.CONTENT_TYPE, "text/plain");
+						} catch (HandlerException ex) {
+							throw new RuntimeException(ex);						}
+						out.write(ByteBuffer.wrap(body.getBytes()));
+					}
+				});
+			}
+		}, serverBinding);
+
+		try {
+			URL serverURL = new URL("http://"
+					+ serverBinding.getInetAddress().getHostAddress() + ":"
+					+ serverBinding.getPort() + "/");
+			HttpURLConnection connection = (HttpURLConnection) serverURL.openConnection();
+			assertEquals("text/plain", connection.getHeaderField("Content-Type"));
+			assertEquals(ResponseStatus.CREATED.getCode(),
+					connection.getResponseCode());
+			Reader reader = new InputStreamReader(connection.getInputStream());
+			StringWriter stringWriter = new StringWriter();
+
+			for (int ch = reader.read(); ch != -1; ch = reader.read()) {
+				stringWriter.write(ch);
+			}
+
+			assertEquals(body, stringWriter.toString());	
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
