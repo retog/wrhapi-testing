@@ -11,7 +11,7 @@
 	<groupId>org.wymiwyg</groupId>
 	<artifactId>wrhapi-testing</artifactId>
 	<name>WRHAPI Testing</name>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.7</version>
 	<description />
 	<build>
 		<plugins>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
 			<artifactId>wrhapi</artifactId>
-			<version>0.7-SNAPSHOT</version>
+			<version>0.7</version>
 		</dependency>
 	</dependencies>
 </project>
