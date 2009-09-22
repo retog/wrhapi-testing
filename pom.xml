@@ -12,6 +12,7 @@
 	<artifactId>wrhapi-testing</artifactId>
 	<name>WRHAPI Testing</name>
 	<version>0.8-SNAPSHOT</version>
+	<packaging>bundle</packaging>
 	<description />
 	<build>
 		<plugins>
@@ -22,6 +23,12 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+<!-- 				<version>1.2.1</version> -->
+				<extensions>true</extensions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -31,9 +38,9 @@
 			<version>4.4</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.wymiwyg</groupId>
