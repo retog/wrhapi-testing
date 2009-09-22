@@ -66,6 +66,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.Test;
 import org.wymiwyg.commons.timelogger.SummaryReportWriter;
 import org.wymiwyg.commons.timelogger.TimeLogger;
 
@@ -101,6 +102,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testSimpleBodyWriting() throws Exception {
 		testSimpleBody(true);
 	}
@@ -108,6 +110,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testSimpleBodyInputStream() throws Exception {
 		testSimpleBody(false);
 	}
@@ -158,6 +161,7 @@ public class BaseTests extends TestCase {
 		}
 	}
 
+	@Test
 	public void testEmptyBodyAnHeader() throws Exception {
 		final String body = "";
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -208,6 +212,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testLongBody() throws Exception {
 		final byte[] body = Util.createRandomBytes(10 * 1000000);
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -251,6 +256,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testResponseHeader() throws Exception {
 		final String headerValue = "bla blah";
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -279,6 +285,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testScheme() throws Exception {
 		final URIScheme[] schemes = new URIScheme[1];
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -312,6 +319,7 @@ public class BaseTests extends TestCase {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testMultipleRequestHeader() throws Exception {
 		final String headerValue = "bla blah";
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -350,6 +358,7 @@ public class BaseTests extends TestCase {
 	 * included in the host-header
 	 * @throws Exception 
 	 */
+	@Test
 	public void testPort() throws Exception {
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
 
@@ -381,6 +390,7 @@ public class BaseTests extends TestCase {
 	/**
 	 * @throws Exception
 	 */
+	@Test
 	public void testStatusCode() throws Exception {
 		final int statusCode = 302;
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -415,6 +425,7 @@ public class BaseTests extends TestCase {
 		}
 	}
 
+	@Test
 	public void testStatusCodeResetInMessageBody() throws Exception {
 		final int newStatusCode = 302;
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -455,6 +466,7 @@ public class BaseTests extends TestCase {
 		}
 	}
 
+	@Test
 	public void testHeaderAddedInMessageBody() throws Exception {
 		final String serverHeaderValue = "Ad-Hoc testing server";
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -502,6 +514,7 @@ public class BaseTests extends TestCase {
 	 * @throws Exception
 	 *             on failure
 	 */
+	@Test
 	public void testExceptionStatusCodeBeforeBody() throws Exception {
 		final int statusCode = 302;
 		WebServer webServer = createServer().startNewWebServer(new Handler() {
@@ -579,6 +592,7 @@ public class BaseTests extends TestCase {
 	webServer.stop();
 	}
 	}*/
+	@Test
 	public void testRepeated() throws Exception {
 		final String body = "This is the content of the body";
 		final boolean writeBody = false;
