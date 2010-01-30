@@ -13,7 +13,8 @@
 	<name>WRHAPI Testing</name>
 	<version>0.8.1</version>
 	<packaging>bundle</packaging>
-	<description />
+	<description>Utilities to test a wrhapi implementation</description>
+	<url>http://wrahpi.wymiwyg.org/</url>
 	<build>
 		<plugins>
 			<plugin>
@@ -60,4 +61,16 @@
 			<version>0.7.5</version>
 		</dependency>
 	</dependencies>
+	<scm>
+		<developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/wrhapi/</developerConnection>
+		<connection>scm:svn:http://svn.berlios.de/svnroot/repos/wrhapi/</connection>
+		<url>http://svn.berlios.de/svnroot/repos/wrhapi/</url>
+	</scm>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 </project>
